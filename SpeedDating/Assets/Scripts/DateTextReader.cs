@@ -5,8 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class DateTextReader : MonoBehaviour {
-	public string TextFile;
+	public static DateTextReader instance;
 
+	public string TextFile;
+	[SerializeField]
+	private Text DateText;
+	[SerializeField]
+	private Text ResponseText;
 	public List<Sentence> sentences;
 
 	public enum WordType{
@@ -17,19 +22,39 @@ public class DateTextReader : MonoBehaviour {
 	}
 
 	public class Sentence{
-		public Sentence(string datePrompt, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
+		public Sentence(string datePrompt, string playerResponse, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
 			_slots = slots;
 			_words = words;
 			_datePrompt = datePrompt;
 			_goodResponse = goodResponse;
 			_badResponse = badResponse;
+			_playerResponse = playerResponse;
 		}
 
-		List<WordType> _slots;
-		List<Word> _words;
-		string _datePrompt;
-		string _goodResponse;
-		string _badResponse;
+		public Sentence(Sentence s){
+			_slots = s._slots;
+			_words = s._words;
+			_datePrompt = s._datePrompt;
+			_goodResponse = s._goodResponse;
+			_badResponse = s._badResponse;
+			_playerResponse = s._playerResponse;
+		}
+
+		public List<WordType> _slots;
+		public List<Word> _words;
+		public string _datePrompt;
+		public string _goodResponse;
+		public string _badResponse;
+		public string _playerResponse;
+
+		public string GetDateText(){
+			return _datePrompt;
+		}
+
+		public string GetPlayerResponse(){
+			return _playerResponse;
+		}
+
 	}
 
 	public class Word{
@@ -39,15 +64,16 @@ public class DateTextReader : MonoBehaviour {
 			_points = points;
 		}
 
-		WordType _type;
-		string _text;
-		int _points;
+		public WordType _type;
+		public string _text;
+		public int _points;
 	}
 
 
 
 	// Use this for initialization
 	void Start () {
+		instance = this;
 		sentences = new List<Sentence> ();
 		FileInfo sourceFile = new FileInfo ("Assets\\" + TextFile + ".txt");
 		StreamReader reader = sourceFile.OpenText ();
@@ -63,7 +89,7 @@ public class DateTextReader : MonoBehaviour {
 
 			string DatePrompt = prompt.Substring(0,line.IndexOf("}"));
 
-			prompt = prompt.Substring(line.IndexOf("}"), prompt.Length - prompt.IndexOf("}"));
+			prompt = prompt.Substring(line.IndexOf("}") + 1, prompt.Length - prompt.IndexOf("}") -1);
 
 			string displayPrompt = "";
 
@@ -102,7 +128,7 @@ public class DateTextReader : MonoBehaviour {
 
 			nextWord = prompt.IndexOf("<");
 			while(nextWord != -1){
-				string wordString = prompt.Substring(nextWord + 1, nextWord - prompt.IndexOf(","));
+				string wordString = prompt.Substring(nextWord + 1, prompt.IndexOf("|") - nextWord - 1);
 
 				Debug.Log("wordString:" + wordString);
 
@@ -143,12 +169,73 @@ public class DateTextReader : MonoBehaviour {
 			print("line:" + line + " prompt:" + displayPrompt);
 
 			line = reader.ReadLine();
-			sentences.Add(new Sentence(DatePrompt,slots,words,goodResponse,badResponse));
+			sentences.Add(new Sentence(DatePrompt,displayPrompt,slots,words,goodResponse,badResponse));
 		} while (line != null);
+
+		StartCoroutine (Date ());
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public Canvas canvas;
+	public GameObject ClickableWord;
+	private bool sentenceCompleted = false;
+
+	private Word toAdd;
+
+	public static void AddWord(Word w){
+		instance.toAdd = w;
+	}
+
+	public IEnumerator Date (){
+		//while time is left
+		float timeLeft = 120.0f;
+		int position = 0;
+
+		while (timeLeft > 0.0f) {
+			List<Word> selectedWords = new List<Word>();
+
+			//pick the relevant sentence
+			if (position >= sentences.Count) {
+				position = 0;
+			}
+
+			Sentence s = new Sentence(sentences[position]);
+
+			DateText.text = s.GetDateText();
+
+			ResponseText.text = s.GetPlayerResponse();
+			List<GameObject> wordsOnScreen = new List<GameObject>();
+			foreach (Word w in s._words) {
+				GameObject newGO = GameObject.Instantiate (ClickableWord);
+				newGO.transform.parent = canvas.transform;
+				RectTransform rt = canvas.GetComponent<RectTransform> ();
+				newGO.transform.localPosition = new Vector2 (Random.Range (-350.0f, 350.0f),  Random.Range (-250.0f, 250.0f));
+				newGO.transform.localScale = Vector3.one;
+				newGO.GetComponent<ClickableWord> ().init (w);
+				wordsOnScreen.Add (newGO);
+			}
+
+			position++;
+			timeLeft -= Time.deltaTime;
+
+			while (sentenceCompleted == false) {
+				if (toAdd != null) {
+					selectedWords.Add (toAdd);
+					string curText = ResponseText.text;
+
+					int posSpace = curText.IndexOf ("_____");
+
+					ResponseText.text = curText.Substring (0, posSpace) + " " + toAdd._text + " " + curText.Substring (posSpace + 5, curText.Length - posSpace-5);
+
+					toAdd = null;
+				}
+
+				yield return new WaitForEndOfFrame ();
+			}
+
+			foreach (GameObject w in wordsOnScreen) {
+				if (w != null) {
+					Destroy (w);
+				}
+			}
+		}
 	}
 }

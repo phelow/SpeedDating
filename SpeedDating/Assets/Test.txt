@@ -1,4 +1,4 @@
-Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
-Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
-Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
-Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
+What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
+What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
+What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
+What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
