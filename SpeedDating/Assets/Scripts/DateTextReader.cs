@@ -184,12 +184,16 @@ public class DateTextReader : MonoBehaviour {
 		instance.toAdd = w;
 	}
 
+	public Text points;
+
 	public IEnumerator Date (){
 		//while time is left
 		float timeLeft = 120.0f;
 		int position = 0;
-
+		int totalPoints = 0;
 		while (timeLeft > 0.0f) {
+			int roundPoints = 0;
+			points.text = "" +totalPoints;
 			List<Word> selectedWords = new List<Word>();
 
 			//pick the relevant sentence
@@ -215,16 +219,28 @@ public class DateTextReader : MonoBehaviour {
 
 			position++;
 			timeLeft -= Time.deltaTime;
-
-			while (sentenceCompleted == false) {
+			int sentencePosition = 0;
+			while (sentencePosition < s._slots.Count) {
 				if (toAdd != null) {
 					selectedWords.Add (toAdd);
 					string curText = ResponseText.text;
 
 					int posSpace = curText.IndexOf ("_____");
 
+
 					ResponseText.text = curText.Substring (0, posSpace) + " " + toAdd._text + " " + curText.Substring (posSpace + 5, curText.Length - posSpace-5);
 
+					int pointsToAdd = 0;
+					if (s._slots [sentencePosition] == toAdd._type) {
+						pointsToAdd = toAdd._points;
+					} else {
+						pointsToAdd = -5;
+					}
+
+					totalPoints += pointsToAdd;
+					roundPoints = pointsToAdd;
+					sentencePosition++;
+					points.text = "" +totalPoints;
 					toAdd = null;
 				}
 
