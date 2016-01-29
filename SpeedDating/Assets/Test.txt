@@ -1,1 +1,1 @@
-Hello my [noun] is [verb]: <Cat, 4, noun>, <Black, 3, adjective>;
+Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;
