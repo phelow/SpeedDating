@@ -185,6 +185,7 @@ public class DateTextReader : MonoBehaviour {
 	}
 
 	public Text points;
+	public Text responseText;
 
 	public IEnumerator Date (){
 		//while time is left
@@ -246,6 +247,16 @@ public class DateTextReader : MonoBehaviour {
 
 				yield return new WaitForEndOfFrame ();
 			}
+
+			if (roundPoints < 0) {
+				responseText.text = s._badResponse;
+
+			} else {
+
+				responseText.text = s._goodResponse;
+			}
+
+			yield return new WaitForSeconds (1.0f);
 
 			foreach (GameObject w in wordsOnScreen) {
 				if (w != null) {
