@@ -1,1 +1,4 @@
-Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;
+Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
+Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
+Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response
+Date Dialog}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective>;{Good Response|Bad Response

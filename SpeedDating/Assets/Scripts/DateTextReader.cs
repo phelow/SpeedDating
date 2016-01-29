@@ -17,13 +17,19 @@ public class DateTextReader : MonoBehaviour {
 	}
 
 	public class Sentence{
-		public Sentence(List<WordType> slots, List<Word> words){
+		public Sentence(string datePrompt, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
 			_slots = slots;
 			_words = words;
+			_datePrompt = datePrompt;
+			_goodResponse = goodResponse;
+			_badResponse = badResponse;
 		}
 
 		List<WordType> _slots;
 		List<Word> _words;
+		string _datePrompt;
+		string _goodResponse;
+		string _badResponse;
 	}
 
 	public class Word{
@@ -55,6 +61,10 @@ public class DateTextReader : MonoBehaviour {
 
 			string prompt = line.Substring(0, line.IndexOf(":"));
 
+			string DatePrompt = prompt.Substring(0,line.IndexOf("}"));
+
+			prompt = prompt.Substring(line.IndexOf("}"), prompt.Length - prompt.IndexOf("}"));
+
 			string displayPrompt = "";
 
 			int nextWord = 0;
@@ -64,6 +74,8 @@ public class DateTextReader : MonoBehaviour {
 				displayPrompt += prompt.Substring(0,nextWord) + "_____";
 
 				string wordTypeString = prompt.Substring(nextWord + 1, prompt.IndexOf("]") - nextWord -1);
+
+
 				Debug.Log(wordTypeString);
 				switch(wordTypeString){
 				case "adjective":
@@ -121,12 +133,18 @@ public class DateTextReader : MonoBehaviour {
 				prompt = prompt.Substring(prompt.IndexOf(">") + 1, prompt.Length - (prompt.IndexOf(">") + 1) );
 				nextWord = prompt.IndexOf("<");
 			}
-			print("line:" + line + " prompt:" + displayPrompt);
-			line = reader.ReadLine();
-			sentences.Add(new Sentence(slots,words));
-		} while (line != null);
+			string goodResponse = prompt.Substring(prompt.IndexOf("{") + 1, prompt.IndexOf("|") - prompt.IndexOf("{") - 1);
+			string badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|") - 1);
 
-				Debug.Log(sentences);
+			Debug.Log("goodResponse:" + goodResponse + " badResponse:" + badResponse);
+
+			print("136 prompt:" + prompt);
+			print(DatePrompt);
+			print("line:" + line + " prompt:" + displayPrompt);
+
+			line = reader.ReadLine();
+			sentences.Add(new Sentence(DatePrompt,slots,words,goodResponse,badResponse));
+		} while (line != null);
 	}
 	
 	// Update is called once per frame
