@@ -268,7 +268,7 @@ public class DateTextReader : MonoBehaviour {
 			int sentencePosition = 0;
 			bool confused = false;
 
-			while (sentencePosition < s._slots.Count) {
+			while (sentencePosition < s._slots.Count && timeLeft > 0.0f) {
 				if (removeLastWord) {
 					Word w = wordsAdded.Pop ();
 
