@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
 public class DateTextReader : MonoBehaviour {
 	public static DateTextReader instance;
+
+	public int minConfusedAffection;
+	public int minVictoryAffection;
 
 	public string TextFile;
 	[SerializeField]
@@ -218,28 +222,32 @@ public class DateTextReader : MonoBehaviour {
 	public Text responseText;
 	public Text timerText;
 
+	public float timeLeft = 120.0f;
+	public int curScene = 1;
 	public IEnumerator Date (){
 		//while time is left
-		float timeLeft = 120.0f;
 		int position = 0;
 		int totalPoints = 0;
+		bool quit = false;
 		while (timeLeft > 0.0f) {
 			int roundPoints = 0;
 			points.text = "" +totalPoints;
 			List<Word> selectedWords = new List<Word>();
-
 
 			Sentence s;
 			do{
 				//pick the relevant sentence
 				if (position >= sentences.Count) {
 					position = 0;
+					quit = true;
 				}
 				s = new Sentence(sentences[position]);
 				position++;
 			} while((s._affectionNeeded < totalPoints && s._comparison == "<" )||( s._affectionNeeded > totalPoints && s._comparison == ">"));
 
-
+			if (quit) {
+				break;
+			}
 
 			DateText.text = s.GetDateText();
 
@@ -324,5 +332,35 @@ public class DateTextReader : MonoBehaviour {
 				}
 			}
 		}
+
+		if (!quit) { //sentences were completed
+			ResponseText.text = "";
+			responseText.text = "";
+
+			if (totalPoints < minConfusedAffection) {
+				DateText.text = "This is a bad date.";
+			} else {
+				DateText.text = "This is a confused date";
+			}
+
+		} else { //we ran out of time
+
+			ResponseText.text = "";
+			responseText.text = "";
+
+			if (totalPoints < minConfusedAffection) {
+				DateText.text = "This is a bad date.";
+			} else if(totalPoints > minVictoryAffection){
+				DateText.text = "you won the date";
+				PlayerPrefs.SetInt ("" + curScene, 1); 
+			}
+
+			else {
+				DateText.text = "This is a confused date";
+			}
+		}
+
+		yield return new WaitForSeconds (2.0f);
+		SceneManager.LoadScene (0);
 	}
 }

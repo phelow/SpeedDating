@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\ClickableWord.cs" />
+     <Compile Include="Assets\MenuSelection.cs" />
      <Compile Include="Assets\PointManager.cs" />
      <Compile Include="Assets\Scripts\DateTextReader.cs" />
      <None Include="Assets\Test.txt" />
