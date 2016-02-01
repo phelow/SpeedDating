@@ -18,17 +18,20 @@ public class DateTextReader : MonoBehaviour {
 		Adjective,
 		Noun,
 		Verb,
-		Adverb
+		Adverb,
+		Weird
 	}
 
 	public class Sentence{
-		public Sentence(string datePrompt, string playerResponse, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
+		public Sentence(string comparison, int affectionNeeded, string datePrompt, string playerResponse, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
 			_slots = slots;
 			_words = words;
 			_datePrompt = datePrompt;
 			_goodResponse = goodResponse;
 			_badResponse = badResponse;
 			_playerResponse = playerResponse;
+			_comparison = comparison;
+			_affectionNeeded = affectionNeeded;
 		}
 
 		public Sentence(Sentence s){
@@ -38,6 +41,8 @@ public class DateTextReader : MonoBehaviour {
 			_goodResponse = s._goodResponse;
 			_badResponse = s._badResponse;
 			_playerResponse = s._playerResponse;
+			_affectionNeeded = s._affectionNeeded;
+			_comparison = s._comparison;
 		}
 
 		public List<WordType> _slots;
@@ -46,6 +51,8 @@ public class DateTextReader : MonoBehaviour {
 		public string _goodResponse;
 		public string _badResponse;
 		public string _playerResponse;
+		public string _comparison;
+		public int _affectionNeeded;
 
 		public string GetDateText(){
 			return _datePrompt;
@@ -73,6 +80,8 @@ public class DateTextReader : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		wordsAdded = new Stack<Word> ();
+
 		instance = this;
 		sentences = new List<Sentence> ();
 		FileInfo sourceFile = new FileInfo ("Assets\\" + TextFile + ".txt");
@@ -86,59 +95,67 @@ public class DateTextReader : MonoBehaviour {
 			List<WordType> slots = new List<WordType>();
 
 			string prompt = line.Substring(0, line.IndexOf(":"));
+			string comparison = prompt.Substring(0,1);
+			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") -1);
+			string affectionString = prompt.Substring(0, prompt.IndexOf("|"));
+			string promptString = prompt.Substring(line.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|"));
+			int affectionNeeded = int.Parse(affectionString);
 
-			string DatePrompt = prompt.Substring(0,line.IndexOf("}"));
+			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|"));
 
-			prompt = prompt.Substring(line.IndexOf("}") + 1, prompt.Length - prompt.IndexOf("}") -1);
+			string DatePrompt = prompt.Substring(1,prompt.IndexOf("}")-1);
+
+			prompt = prompt.Substring(prompt.IndexOf("}") + 1, prompt.Length - prompt.IndexOf("}") - 1);
 
 			string displayPrompt = "";
 
 			int nextWord = 0;
 
 			nextWord = prompt.IndexOf("[");
-			while(nextWord != -1){
-				displayPrompt += prompt.Substring(0,nextWord) + "_____";
+			bool buffer = true;
+			while(nextWord != -1 || buffer){
+				if(nextWord == -1){
+					buffer = false;
+					displayPrompt += prompt;
 
-				string wordTypeString = prompt.Substring(nextWord + 1, prompt.IndexOf("]") - nextWord -1);
-
-
-				Debug.Log(wordTypeString);
-				switch(wordTypeString){
-				case "adjective":
-					slots.Add(WordType.Adjective);
-					break;
-				case "noun":
-					slots.Add(WordType.Noun);
-					break;
-				case "verb":
-					slots.Add(WordType.Verb);
-					break;
-				case "adverb":
-					slots.Add(WordType.Adverb);
-					break;
 				}
+				else{
+					displayPrompt += prompt.Substring(0,nextWord) + "_____";
+					string wordTypeString = prompt.Substring(nextWord + 1, prompt.IndexOf("]") - nextWord -1);
+
+					switch(wordTypeString){
+					case "adjective":
+						slots.Add(WordType.Adjective);
+						break;
+					case "noun":
+						slots.Add(WordType.Noun);
+						break;
+					case "verb":
+						slots.Add(WordType.Verb);
+						break;
+					case "adverb":
+						slots.Add(WordType.Adverb);
+						break;
+					}
 
 
-				prompt = prompt.Substring(prompt.IndexOf("]") + 1, prompt.Length - (prompt.IndexOf("]") + 1) );
-				nextWord = prompt.IndexOf("[");
+					prompt = prompt.Substring(prompt.IndexOf("]") + 1, prompt.Length - (prompt.IndexOf("]") + 1) );
+					nextWord = prompt.IndexOf("[");
+
+				}
 			}
 
 			prompt = line.Substring(line.IndexOf(":"),line.Length - line.IndexOf(":"));
-			Debug.Log("words:" + prompt);
 
 			nextWord = prompt.IndexOf("<");
 			while(nextWord != -1){
 				string wordString = prompt.Substring(nextWord + 1, prompt.IndexOf("|") - nextWord - 1);
 
-				Debug.Log("wordString:" + wordString);
-
 				prompt = prompt.Substring(prompt.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") - 1);
-				Debug.Log(prompt.Substring(0, prompt.IndexOf("|")));
 				int points = int.Parse(prompt.Substring(0, prompt.IndexOf("|")));
 				prompt = prompt.Substring(prompt.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") - 1);
 
 				string wordTypeString = prompt.Substring(0, prompt.IndexOf(">"));
-				Debug.Log(wordTypeString);
 				switch(wordTypeString){
 				case "adjective":
 					words.Add(new Word(WordType.Adjective,wordString,points));
@@ -152,6 +169,9 @@ public class DateTextReader : MonoBehaviour {
 				case "adverb":
 					words.Add(new Word(WordType.Adverb,wordString,points));
 					break;
+				case "weird":
+					words.Add(new Word(WordType.Weird,wordString,points));
+					break;
 				}
 
 
@@ -162,14 +182,8 @@ public class DateTextReader : MonoBehaviour {
 			string goodResponse = prompt.Substring(prompt.IndexOf("{") + 1, prompt.IndexOf("|") - prompt.IndexOf("{") - 1);
 			string badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|") - 1);
 
-			Debug.Log("goodResponse:" + goodResponse + " badResponse:" + badResponse);
-
-			print("136 prompt:" + prompt);
-			print(DatePrompt);
-			print("line:" + line + " prompt:" + displayPrompt);
-
 			line = reader.ReadLine();
-			sentences.Add(new Sentence(DatePrompt,displayPrompt,slots,words,goodResponse,badResponse));
+			sentences.Add(new Sentence(comparison, affectionNeeded, DatePrompt,displayPrompt,slots,words,goodResponse,badResponse));
 		} while (line != null);
 
 		StartCoroutine (Date ());
@@ -180,12 +194,25 @@ public class DateTextReader : MonoBehaviour {
 
 	private Word toAdd;
 
+	private Stack<Word> wordsAdded;
+
 	public static void AddWord(Word w){
 		instance.toAdd = w;
+		instance.wordsAdded.Push (w);
 	}
+
+	private bool removeLastWord = false;
+
+	public void Update(){
+		/*if (Input.GetKeyDown (KeyCode.Backspace)) {
+			removeLastWord = true;
+		}*/
+	}
+
 
 	public Text points;
 	public Text responseText;
+	public Text timerText;
 
 	public IEnumerator Date (){
 		//while time is left
@@ -197,12 +224,18 @@ public class DateTextReader : MonoBehaviour {
 			points.text = "" +totalPoints;
 			List<Word> selectedWords = new List<Word>();
 
-			//pick the relevant sentence
-			if (position >= sentences.Count) {
-				position = 0;
-			}
 
-			Sentence s = new Sentence(sentences[position]);
+			Sentence s;
+			do{
+				//pick the relevant sentence
+				if (position >= sentences.Count) {
+					position = 0;
+				}
+				s = new Sentence(sentences[position]);
+				position++;
+			} while((s._affectionNeeded < totalPoints && s._comparison == "<" )||( s._affectionNeeded > totalPoints && s._comparison == ">"));
+
+
 
 			DateText.text = s.GetDateText();
 
@@ -218,10 +251,24 @@ public class DateTextReader : MonoBehaviour {
 				wordsOnScreen.Add (newGO);
 			}
 
-			position++;
 			timeLeft -= Time.deltaTime;
+			timerText.text = "" + timeLeft;
 			int sentencePosition = 0;
 			while (sentencePosition < s._slots.Count) {
+				if (removeLastWord) {
+					Word w = wordsAdded.Pop ();
+
+					GameObject newGO = GameObject.Instantiate (ClickableWord);
+					newGO.transform.parent = canvas.transform;
+					RectTransform rt = canvas.GetComponent<RectTransform> ();
+					newGO.transform.localPosition = new Vector2 (Random.Range (-350.0f, 350.0f),  Random.Range (-250.0f, 250.0f));
+					newGO.transform.localScale = Vector3.one;
+					newGO.GetComponent<ClickableWord> ().init (w);
+					wordsOnScreen.Add (newGO);
+					ResponseText.text.Replace (w._text, "_____");
+					sentencePosition--;
+				}
+
 				if (toAdd != null) {
 					selectedWords.Add (toAdd);
 					string curText = ResponseText.text;
@@ -244,7 +291,8 @@ public class DateTextReader : MonoBehaviour {
 					points.text = "" +totalPoints;
 					toAdd = null;
 				}
-
+				timeLeft -= Time.deltaTime;
+				timerText.text = "" + timeLeft;
 				yield return new WaitForEndOfFrame ();
 			}
 
@@ -256,7 +304,9 @@ public class DateTextReader : MonoBehaviour {
 				responseText.text = s._goodResponse;
 			}
 
-			yield return new WaitForSeconds (1.0f);
+			timeLeft -= Time.deltaTime;
+			timerText.text = "" + timeLeft;
+			yield return new WaitForEndOfFrame ();
 
 			foreach (GameObject w in wordsOnScreen) {
 				if (w != null) {

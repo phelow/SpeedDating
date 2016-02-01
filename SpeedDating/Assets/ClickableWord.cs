@@ -12,7 +12,6 @@ public class ClickableWord : MonoBehaviour {
 	}
 
 	public void OnClick(){
-		Debug.LogError ("Click");
 		DateTextReader.AddWord (word);
 		Destroy (this.gameObject);
 	}

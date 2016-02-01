@@ -1,4 +1,3 @@
-What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
-What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
-What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
-What color is your cat}Hello my [noun] is [adjective]: <Cat|4|noun> <Black|3|adjective> <Green|1|adjective>;{Good Response|Bad Response
+>|-1|Hi there, my name's Kit!}Hi kit, nice [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
+<|-1|I don't like you} ey [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
+>|-2|I like you}Hi kit, nice [noun] [verb].:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
