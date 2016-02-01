@@ -23,7 +23,7 @@ public class DateTextReader : MonoBehaviour {
 	}
 
 	public class Sentence{
-		public Sentence(string comparison, int affectionNeeded, string datePrompt, string playerResponse, List<WordType> slots, List<Word> words, string goodResponse, string badResponse){
+		public Sentence(string comparison, int affectionNeeded, string datePrompt, string playerResponse, List<WordType> slots, List<Word> words, string goodResponse, string badResponse, string confusedText){
 			_slots = slots;
 			_words = words;
 			_datePrompt = datePrompt;
@@ -32,6 +32,7 @@ public class DateTextReader : MonoBehaviour {
 			_playerResponse = playerResponse;
 			_comparison = comparison;
 			_affectionNeeded = affectionNeeded;
+			_confusedText = confusedText;
 		}
 
 		public Sentence(Sentence s){
@@ -43,10 +44,12 @@ public class DateTextReader : MonoBehaviour {
 			_playerResponse = s._playerResponse;
 			_affectionNeeded = s._affectionNeeded;
 			_comparison = s._comparison;
+			_confusedText = s._confusedText;
 		}
 
 		public List<WordType> _slots;
 		public List<Word> _words;
+		public string _confusedText;
 		public string _datePrompt;
 		public string _goodResponse;
 		public string _badResponse;
@@ -98,10 +101,10 @@ public class DateTextReader : MonoBehaviour {
 			string comparison = prompt.Substring(0,1);
 			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") -1);
 			string affectionString = prompt.Substring(0, prompt.IndexOf("|"));
-			string promptString = prompt.Substring(line.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|"));
+			string promptString = prompt.Substring(prompt.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|") -1);
 			int affectionNeeded = int.Parse(affectionString);
 
-			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|"));
+			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") -1);
 
 			string DatePrompt = prompt.Substring(1,prompt.IndexOf("}")-1);
 
@@ -180,10 +183,11 @@ public class DateTextReader : MonoBehaviour {
 				nextWord = prompt.IndexOf("<");
 			}
 			string goodResponse = prompt.Substring(prompt.IndexOf("{") + 1, prompt.IndexOf("|") - prompt.IndexOf("{") - 1);
-			string badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|") - 1);
+			string badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.IndexOf("+") - prompt.IndexOf("|") - 1);
+			string confusedRespons = prompt.Substring(prompt.IndexOf("+") + 1, prompt.Length - prompt.IndexOf("+")-1);
 
 			line = reader.ReadLine();
-			sentences.Add(new Sentence(comparison, affectionNeeded, DatePrompt,displayPrompt,slots,words,goodResponse,badResponse));
+			sentences.Add(new Sentence(comparison, affectionNeeded, DatePrompt,displayPrompt,slots,words,goodResponse,badResponse, confusedRespons));
 		} while (line != null);
 
 		StartCoroutine (Date ());
@@ -254,6 +258,8 @@ public class DateTextReader : MonoBehaviour {
 			timeLeft -= Time.deltaTime;
 			timerText.text = "" + timeLeft;
 			int sentencePosition = 0;
+			bool confused = false;
+
 			while (sentencePosition < s._slots.Count) {
 				if (removeLastWord) {
 					Word w = wordsAdded.Pop ();
@@ -283,6 +289,7 @@ public class DateTextReader : MonoBehaviour {
 						pointsToAdd = toAdd._points;
 					} else {
 						pointsToAdd = -5;
+						confused = true;
 					}
 
 					totalPoints += pointsToAdd;
@@ -296,7 +303,10 @@ public class DateTextReader : MonoBehaviour {
 				yield return new WaitForEndOfFrame ();
 			}
 
-			if (roundPoints < 0) {
+			if (confused) {
+				responseText.text = s._confusedText;
+			}
+			else if (roundPoints < 0) {
 				responseText.text = s._badResponse;
 
 			} else {

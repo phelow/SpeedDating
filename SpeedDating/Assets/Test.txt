@@ -1,3 +1,3 @@
->|-1|Hi there, my name's Kit!}Hi kit, nice [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
-<|-1|I don't like you} ey [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
->|-2|I like you}Hi kit, nice [noun] [verb].:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Sticky|3|adjective>;{This is good|This is bad|This is weird
+>|-1|Hi there, my name's Kit!}Hi kit, nice [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Stickybun|-3|noun>;{This is good|This is bad+This is weird
+<|0|I don't like you} ey [noun] you have there:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Stickybun|-3|noun>;{This is good|This is bad+This is weird
+>|-1|I like you}Hi kit, nice [noun] [verb].:<Fish|4|noun>  <Insignia|4|noun> <Sweet|2|adjective> <Stickybun|-3|noun>;{This is good|This is bad+This is weird
