@@ -108,9 +108,9 @@ public class DateTextReader : MonoBehaviour {
 			string promptString = prompt.Substring(prompt.IndexOf("|") + 1,prompt.Length - prompt.IndexOf("|") -1);
 			int affectionNeeded = int.Parse(affectionString);
 
-			prompt = prompt.Substring(line.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") -1);
+			prompt = prompt.Substring(prompt.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") -1);
 
-			string DatePrompt = prompt.Substring(1,prompt.IndexOf("}")-1);
+			string DatePrompt = prompt.Substring(0,prompt.IndexOf("}"));
 
 			prompt = prompt.Substring(prompt.IndexOf("}") + 1, prompt.Length - prompt.IndexOf("}") - 1);
 
