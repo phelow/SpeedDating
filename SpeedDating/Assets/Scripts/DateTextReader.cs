@@ -18,6 +18,8 @@ public class DateTextReader : MonoBehaviour {
 	private Text ResponseText;
 	public List<Sentence> sentences;
 
+	public RectTransform wordPool;
+
 	public enum WordType{
 		Adjective,
 		Noun,
@@ -257,7 +259,7 @@ public class DateTextReader : MonoBehaviour {
 				GameObject newGO = GameObject.Instantiate (ClickableWord);
 				newGO.transform.parent = canvas.transform;
 				RectTransform rt = canvas.GetComponent<RectTransform> ();
-				newGO.transform.localPosition = new Vector2 (Random.Range (-350.0f, 350.0f),  Random.Range (-250.0f, 250.0f));
+				newGO.transform.localPosition = new Vector2 (Random.Range (-299.0f, -37.0f),  Random.Range (-182.0f, 58.4f));
 				newGO.transform.localScale = Vector3.one;
 				newGO.GetComponent<ClickableWord> ().init (w);
 				wordsOnScreen.Add (newGO);
