@@ -276,7 +276,7 @@ public class DateTextReader : MonoBehaviour {
 			}
 
 			timeLeft -= Time.deltaTime;
-			timerText.text = "" + timeLeft;
+			timerText.text = "" + (int)timeLeft;
 			if (timeLeft <= 5.0f && timeRunningPlaying == false) {
 				timeRunningPlaying = true;
 				SoundManager.PlayTimeRunningOut ();
@@ -324,7 +324,7 @@ public class DateTextReader : MonoBehaviour {
 					toAdd = null;
 				}
 				timeLeft -= Time.deltaTime;
-				timerText.text = "" + timeLeft;
+				timerText.text = "" + (int)timeLeft;
 				if (timeLeft <= 5.0f && timeRunningPlaying == false) {
 					timeRunningPlaying = true;
 					SoundManager.PlayTimeRunningOut ();
@@ -344,7 +344,7 @@ public class DateTextReader : MonoBehaviour {
 			}
 
 			timeLeft -= Time.deltaTime;
-			timerText.text = "" + timeLeft;
+			timerText.text = "" + (int)timeLeft;
 			if (timeLeft <= 5.0f && timeRunningPlaying == false) {
 				timeRunningPlaying = true;
 				SoundManager.PlayTimeRunningOut ();
