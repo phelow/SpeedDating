@@ -165,7 +165,8 @@ public class DateTextReader : MonoBehaviour {
 				string wordString = prompt.Substring(nextWord + 1, prompt.IndexOf("|") - nextWord - 1);
 
 				prompt = prompt.Substring(prompt.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") - 1);
-				int points = int.Parse(prompt.Substring(0, prompt.IndexOf("|")));
+				string s = prompt.Substring(0, prompt.IndexOf("|"));
+				int points = int.Parse(s);
 				prompt = prompt.Substring(prompt.IndexOf("|") + 1, prompt.Length - prompt.IndexOf("|") - 1);
 
 				string wordTypeString = prompt.Substring(0, prompt.IndexOf(">"));
