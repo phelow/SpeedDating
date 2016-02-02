@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ClickableWord : MonoBehaviour {
 	public Text t;
 	public DateTextReader.Word word;
+
 	public void init(DateTextReader.Word w){
 		gameObject.AddComponent<BoxCollider2D> ();
 		t.text = w._text;
@@ -16,6 +17,7 @@ public class ClickableWord : MonoBehaviour {
 	public void OnClick(){
 		DateTextReader.AddWord (word);
 		Destroy (this.gameObject);
+		SoundManager.PlayClickWord ();
 	}
 		
 	public void OnMouseDown()

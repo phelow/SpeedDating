@@ -25,6 +25,7 @@ public class DateTextReader : MonoBehaviour {
 		Noun,
 		Verb,
 		Adverb,
+		Interjection,
 		Weird
 	}
 
@@ -145,6 +146,9 @@ public class DateTextReader : MonoBehaviour {
 					case "adverb":
 						slots.Add(WordType.Adverb);
 						break;
+					case "interjection":
+						slots.Add(WordType.Interjection);
+						break;
 					}
 
 
@@ -177,6 +181,10 @@ public class DateTextReader : MonoBehaviour {
 					break;
 				case "adverb":
 					words.Add(new Word(WordType.Adverb,wordString,points));
+					break;
+
+				case "interjection":
+					words.Add(new Word(WordType.Interjection,wordString,points));
 					break;
 				case "weird":
 					words.Add(new Word(WordType.Weird,wordString,points));
@@ -225,6 +233,7 @@ public class DateTextReader : MonoBehaviour {
 	public Text timerText;
 
 	public float timeLeft = 120.0f;
+	public bool timeRunningPlaying = false;
 	public int curScene = 1;
 	public IEnumerator Date (){
 		//while time is left
@@ -267,6 +276,11 @@ public class DateTextReader : MonoBehaviour {
 
 			timeLeft -= Time.deltaTime;
 			timerText.text = "" + timeLeft;
+			if (timeLeft <= 5.0f && timeRunningPlaying == false) {
+				timeRunningPlaying = true;
+				SoundManager.PlayTimeRunningOut ();
+			}
+
 			int sentencePosition = 0;
 			bool confused = false;
 
@@ -310,6 +324,10 @@ public class DateTextReader : MonoBehaviour {
 				}
 				timeLeft -= Time.deltaTime;
 				timerText.text = "" + timeLeft;
+				if (timeLeft <= 5.0f && timeRunningPlaying == false) {
+					timeRunningPlaying = true;
+					SoundManager.PlayTimeRunningOut ();
+				}
 				yield return new WaitForEndOfFrame ();
 			}
 
@@ -326,6 +344,12 @@ public class DateTextReader : MonoBehaviour {
 
 			timeLeft -= Time.deltaTime;
 			timerText.text = "" + timeLeft;
+			if (timeLeft <= 5.0f && timeRunningPlaying == false) {
+				timeRunningPlaying = true;
+				SoundManager.PlayTimeRunningOut ();
+			}
+		
+
 			yield return new WaitForEndOfFrame ();
 
 			foreach (GameObject w in wordsOnScreen) {
@@ -340,29 +364,35 @@ public class DateTextReader : MonoBehaviour {
 			responseText.text = "";
 
 			if (totalPoints < minConfusedAffection) {
-				DateText.text = "This is a bad date.";
-			} else {
-				DateText.text = "This is a confused date";
-			}
+				DateText.text = badDateText;
 
+			} else {
+				DateText.text = confusedDateText;
+			}
+			SoundManager.PlayNoNumber ();
 		} else { //we ran out of time
 
 			ResponseText.text = "";
 			responseText.text = "";
 
 			if (totalPoints < minConfusedAffection) {
-				DateText.text = "This is a bad date.";
+				DateText.text = badDateText;
+				SoundManager.PlayNoNumber ();
 			} else if(totalPoints > minVictoryAffection){
-				DateText.text = "you won the date";
+				DateText.text = goodDateText;
+				SoundManager.PlayGotNumber ();
 				PlayerPrefs.SetInt ("" + curScene, 1); 
 			}
 
 			else {
-				DateText.text = "This is a confused date";
+				DateText.text = confusedDateText;
 			}
 		}
 
 		yield return new WaitForSeconds (2.0f);
 		SceneManager.LoadScene (0);
 	}
+	public string badDateText = "This is a bad date.";
+	public string goodDateText = "you won the date";
+	public string confusedDateText = "This is a confused date";
 }
