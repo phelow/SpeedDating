@@ -11,6 +11,12 @@ public class DateTextReader : MonoBehaviour {
 	public int minConfusedAffection;
 	public int minVictoryAffection;
 
+	public Sprite GoodReaction;
+	public Sprite BadReaction;
+	public Sprite ConfusedReaction;
+
+	public Image DateImage;
+
 	public string TextFile;
 	[SerializeField]
 	private Text DateText;
@@ -333,13 +339,15 @@ public class DateTextReader : MonoBehaviour {
 			}
 
 			if (confused) {
+				DateImage.sprite = ConfusedReaction;
 				responseText.text = s._confusedText;
 			}
 			else if (roundPoints < 0) {
+				DateImage.sprite = BadReaction;
 				responseText.text = s._badResponse;
 
 			} else {
-
+				DateImage.sprite = GoodReaction;
 				responseText.text = s._goodResponse;
 			}
 
