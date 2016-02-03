@@ -54,6 +54,7 @@
      <None Include="Assets\Helsing.txt" />
      <None Include="Assets\Mikael.txt" />
      <None Include="Assets\kit.txt" />
+     <None Include="Assets\Chad.txt" />
      <None Include="Assets\Test.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
