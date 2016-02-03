@@ -203,9 +203,30 @@ public class DateTextReader : MonoBehaviour {
 				prompt = prompt.Substring(prompt.IndexOf(">") + 1, prompt.Length - (prompt.IndexOf(">") + 1) );
 				nextWord = prompt.IndexOf("<");
 			}
-			string goodResponse = prompt.Substring(prompt.IndexOf("{") + 1, prompt.IndexOf("|") - prompt.IndexOf("{") - 1);
-			string badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.IndexOf("+") - prompt.IndexOf("|") - 1);
-			string confusedRespons = prompt.Substring(prompt.IndexOf("+") + 1, prompt.Length - prompt.IndexOf("+")-1);
+
+			string goodResponse = "";
+			try{
+				goodResponse = prompt.Substring(prompt.IndexOf("{") + 1, prompt.IndexOf("|") - prompt.IndexOf("{") - 1);
+			}
+			catch{
+				goodResponse = "I agree";
+			}
+
+			string badResponse = "";
+			try{
+				badResponse = prompt.Substring(prompt.IndexOf("|") + 1,prompt.IndexOf("+") - prompt.IndexOf("|") - 1);
+			}
+			catch{
+				badResponse = "I disagree";
+			}
+
+			string confusedRespons = "";
+			try{
+				confusedRespons = prompt.Substring(prompt.IndexOf("+") + 1, prompt.Length - prompt.IndexOf("+")-1);
+			}
+			catch{
+				confusedRespons = "I am confused.";
+			}
 
 			line = reader.ReadLine();
 			sentences.Add(new Sentence(comparison, affectionNeeded, DatePrompt,displayPrompt,slots,words,goodResponse,badResponse, confusedRespons));
