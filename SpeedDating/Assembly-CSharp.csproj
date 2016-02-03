@@ -51,6 +51,8 @@
      <Compile Include="Assets\Reposition.cs" />
      <Compile Include="Assets\Scripts\DateTextReader.cs" />
      <Compile Include="Assets\SoundManager.cs" />
+     <None Include="Assets\Helsing.txt" />
+     <None Include="Assets\Mikael.txt" />
      <None Include="Assets\kit.txt" />
      <None Include="Assets\Test.txt" />
  <Reference Include="UnityEngine.UI">
